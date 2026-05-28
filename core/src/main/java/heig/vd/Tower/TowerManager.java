@@ -1,4 +1,4 @@
-package heig.vd.Tower;
+package heig.vd.tower;
 
 import heig.vd.utils.Position;
 import heig.vd.map.GameMap;
@@ -25,7 +25,7 @@ public class TowerManager {
         return towers.containsKey(pos);
     }
 
- 
+
     public Tower removeTower(Position pos) {
         return towers.remove(pos);
     }

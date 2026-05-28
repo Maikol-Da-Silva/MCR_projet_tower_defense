@@ -1,14 +1,13 @@
-package heig.vd.Tower;
+package heig.vd.tower;
 
-import heig.vd.mob.DMG;
-import heig.vd.mob.Mob;
+import heig.vd.mob.*;
 import heig.vd.utils.Position;
 
 public class Tower {
-    private Position position;      
+    private Position position;
     private DMG damage;
-    private int range;                 
-    private int fire_rate;             
+    private int range;
+    private int fire_rate;
 
 
     public Tower(Position position, DMG damage, int range, int fire_rate) {
@@ -20,11 +19,15 @@ public class Tower {
 
     public boolean isInRange(Mob mob) {
         return false;
-        //TODO 
+        //TODO
     }
 
-    public void attack(){
-        //TODO implement (call mob.takeDamage with DMGHandler chain)
+    public void attack(Mob mob) {
+        DMGHandler chain = new DMGShield(new DMGStatus(new DMGResistance(new DMGHealth(null))));
+
+        if (this.isInRange(mob)) {
+            mob.takeDamage(chain, damage);
+        }
     }
 
 
