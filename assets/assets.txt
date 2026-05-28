@@ -1,1 +1,60 @@
 .gitkeep
+Enemies/spr_bat.png
+Enemies/spr_big_slime.png
+Enemies/spr_demon.png
+Enemies/spr_ghost.png
+Enemies/spr_goblin.png
+Enemies/spr_king_slime.png
+Enemies/spr_normal_slime.png
+Enemies/spr_skeleton.png
+Enemies/spr_zombie.png
+Environment/Decoration/spr_mushroom_01.png
+Environment/Decoration/spr_mushroom_02.png
+Environment/Decoration/spr_rock_01.png
+Environment/Decoration/spr_rock_02.png
+Environment/Decoration/spr_rock_03.png
+Environment/Decoration/spr_tree_01_autumn.png
+Environment/Decoration/spr_tree_01_cherry_blossom.png
+Environment/Decoration/spr_tree_01_normal.png
+Environment/Decoration/spr_tree_02_autumn.png
+Environment/Decoration/spr_tree_02_normal.png
+Environment/Decoration/spr_tree_02_spruce.png
+Environment/Grass/spr_grass_01.png
+Environment/Grass/spr_grass_02.png
+Environment/Grass/spr_grass_03.png
+Environment/Tile Set/spr_tile_set_ground.png
+Environment/Tile Set/spr_tile_set_ground_indexed.png
+Environment/Tile Set/spr_tile_set_stone.png
+Towers/Castle/spr_castle_blue.png
+Towers/Castle/spr_castle_green.png
+Towers/Castle/spr_castle_red.png
+Towers/Combat Towers Projectiles/spr_tower_archer_projectile.png
+Towers/Combat Towers Projectiles/spr_tower_cannon_projectile.png
+Towers/Combat Towers Projectiles/spr_tower_crossbow_projectile.png
+Towers/Combat Towers Projectiles/spr_tower_ice_wizard_projectile.png
+Towers/Combat Towers Projectiles/spr_tower_lightning_tower_projectile.png
+Towers/Combat Towers Projectiles/spr_tower_poison_wizard_projectile.png
+Towers/Combat Towers/spr_tower_archer.png
+Towers/Combat Towers/spr_tower_cannon.png
+Towers/Combat Towers/spr_tower_crossbow.png
+Towers/Combat Towers/spr_tower_ice_wizard.png
+Towers/Combat Towers/spr_tower_lightning_tower.png
+Towers/Combat Towers/spr_tower_poison_wizard.png
+Towers/Non-Combat Towers/spr_normal_tower_01_blue.png
+Towers/Non-Combat Towers/spr_normal_tower_01_green.png
+Towers/Non-Combat Towers/spr_normal_tower_01_red.png
+Towers/Non-Combat Towers/spr_normal_tower_02_blue.png
+Towers/Non-Combat Towers/spr_normal_tower_02_green.png
+Towers/Non-Combat Towers/spr_normal_tower_02_red.png
+tiles/cobblestone_1.png
+tiles/cobblestone_2.png
+tiles/cobblestone_3.png
+tiles/dirty_1.png
+tiles/dirty_2.png
+tiles/dirty_3.png
+tiles/grass_1.png
+tiles/grass_2.png
+tiles/grass_3.png
+tiles/sand_1.png
+tiles/sand_2.png
+tiles/sand_3.png
