@@ -62,7 +62,7 @@ public class TowerSpotGenerator {
                 if (end != null && distanceChebyshev(candidate, end) <= exclusion) {
                     continue;
                 }
-                if (end != null && isCastleFootprint(candidate, end, map.getWidth())) {
+                if (map.isCastleFootprint(candidate)) {
                     continue;
                 }
 
@@ -88,12 +88,5 @@ public class TowerSpotGenerator {
         return Math.max(Math.abs((int) a.getCol() - (int) b.getCol()), Math.abs((int) a.getRow() - (int) b.getRow()));
     }
 
-    private boolean isCastleFootprint(Position candidate, Position end, int mapWidth) {
-        int endX = (int) end.getCol();
-        int endY = (int) end.getRow();
-        int castleLeft = Math.max(0, Math.min(endX - 2, mapWidth - 3));
-        int x = (int) candidate.getCol();
-        int y = (int) candidate.getRow();
-        return y == endY && x >= castleLeft && x < castleLeft + 3;
-    }
+
 }

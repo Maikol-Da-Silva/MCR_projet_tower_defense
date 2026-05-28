@@ -26,8 +26,7 @@ public class FirstScreen implements Screen {
     private static final int SCREEN_PADDING = 16;
     private static final int MIN_TILE_SIZE = 8;
     private static final int MAX_TILE_SIZE = 96;
-    private static final int CASTLE_WIDTH_TILES = 3;
-    private static final int CASTLE_HEIGHT_TILES = 2;
+    // castle size is centralized in GameMap now
     private static final int DECORATION_TARGET_COUNT = 12;
 
     private SpriteBatch batch;
@@ -181,7 +180,7 @@ public class FirstScreen implements Screen {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Position pos = new Position(x, y);
-                if (map.getTile(pos) == TileType.GRASS && !isCastleFootprint(x, y)) {
+                if (map.getTile(pos) == TileType.GRASS && !map.isCastleFootprint(pos)) {
                     candidates.add(pos);
                 }
             }
@@ -240,7 +239,7 @@ public class FirstScreen implements Screen {
                 // Always draw grass first so tiles that are later overlaid (castle/tower) have ground behind
                 batch.draw(grassTexture, drawX, drawY, tileSize, tileSize);
 
-                if (isCastleFootprint(x, y)) {
+                if (map != null && map.isCastleFootprint(new Position(x, y))) {
                     // skip other decorations/road drawing for castle footprint (castle drawn later)
                     continue;
                 }
@@ -263,12 +262,12 @@ public class FirstScreen implements Screen {
             return;
         }
 
-        int castleLeftX = castleLeftX(end);
-        int castleBaseY = castleBaseY(end);
+        int castleLeftX = map.getCastleLeftX();
+        int castleBaseY = map.getCastleBaseY();
         float drawX = offsetX + castleLeftX * tileSize;
         float drawY = offsetY + castleBaseY * tileSize;
 
-        drawAnimatedFrames(castleFrames, (int) end.getCol(), castleBaseY, drawX, drawY, tileSize * CASTLE_WIDTH_TILES, tileSize * CASTLE_HEIGHT_TILES);
+        drawAnimatedFrames(castleFrames, (int) end.getCol(), castleBaseY, drawX, drawY, tileSize * map.getCastleWidth(), tileSize * map.getCastleHeight());
     }
 
     private void drawDecoration(Position pos, float drawX, float drawY) {
@@ -360,23 +359,8 @@ public class FirstScreen implements Screen {
         return (Math.floorMod(hash, 2L) == 0) ? roadTile(0, 1) : roadTile(2, 1);
     }
 
-    private boolean isCastleFootprint(int x, int y) {
-        Position end = map.getEndPoint();
-        return end != null
-                && x >= castleLeftX(end)
-                && x < castleLeftX(end) + CASTLE_WIDTH_TILES
-                && y >= castleBaseY(end)
-                && y < castleBaseY(end) + CASTLE_HEIGHT_TILES;
-    }
 
-    private int castleLeftX(Position end) {
-        return Math.max(0, Math.min((int) end.getCol() - 1, map.getWidth() - CASTLE_WIDTH_TILES));
-    }
 
-    private int castleBaseY(Position end) {
-        int maxBaseY = Math.max(0, map.getHeight() - CASTLE_HEIGHT_TILES);
-        return Math.max(0, Math.min((int) end.getRow(), maxBaseY));
-    }
 
     private void disposeTextures(Texture[] textures) {
         if (textures == null) {

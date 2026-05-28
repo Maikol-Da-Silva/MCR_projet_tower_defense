@@ -12,6 +12,8 @@ public class GameMap {
     private final TileType[][] tiles;
     private final long seed;
     private final MapDifficulty difficulty;
+    private final int castleWidth = 3;
+    private final int castleHeight = 2;
 
     private Position spawnPoint;
     private Position endPoint;
@@ -139,4 +141,41 @@ public class GameMap {
     public int getRoadTileCount() {
         return countTiles(TileType.ROAD) + countTiles(TileType.START) + countTiles(TileType.END);
     }
+
+    /**
+     * Retourne vrai si la position donnée est couverte par le château.
+     * Le château est positionné relativement à la position de fin (endPoint).
+     * La méthode prend la largeur et la hauteur du château en cases pour rester générique.
+     */
+    public boolean isCastleFootprint(Position pos) {
+        if (pos == null || endPoint == null) return false;
+        int castleLeft = getCastleLeftX();
+        int castleBaseY = getCastleBaseY();
+        int x = (int) pos.getCol();
+        int y = (int) pos.getRow();
+        return x >= castleLeft && x < castleLeft + castleWidth
+                && y >= castleBaseY && y < castleBaseY + castleHeight;
+    }
+
+    /**
+     * Retourne la colonne (x) la plus à gauche où le château de largeur donnée doit être dessiné.
+     */
+    public int getCastleLeftX() {
+        if (endPoint == null) return 0;
+        int endX = (int) endPoint.getCol();
+        return Math.max(0, Math.min(endX - 1, width - castleWidth));
+    }
+
+    /**
+     * Retourne la ligne (y) de base (la plus basse) où le château de hauteur donnée doit être dessiné.
+     */
+    public int getCastleBaseY() {
+        if (endPoint == null) return 0;
+        int endY = (int) endPoint.getRow();
+        return Math.max(0, Math.min(endY, height - castleHeight));
+    }
+
+    // convenience accessors using the centralised castle size
+    public int getCastleWidth() { return castleWidth; }
+    public int getCastleHeight() { return castleHeight; }
 }
