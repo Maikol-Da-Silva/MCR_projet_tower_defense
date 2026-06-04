@@ -39,9 +39,4 @@ public class Position {
         Position p = (Position) obj;
         return Float.compare(this.col, p.col) == 0 && Float.compare(this.row, p.row) == 0;
     }
-
-    @Override
-    public int hashCode() {
-        return Float.floatToIntBits(col) ^ Float.floatToIntBits(row);
-    }
 }
