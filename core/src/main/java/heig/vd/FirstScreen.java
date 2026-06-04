@@ -55,7 +55,7 @@ public class FirstScreen implements Screen {
         mapRenderer = new MapRenderer(textureManager);
         towerUIManager = new TowerUIManager();
 
-        regenerateMap();
+        regenerateMap(false);
 
         // Setup input handler for mouse clicks
         Gdx.input.setInputProcessor(new InputAdapter() {
@@ -82,7 +82,7 @@ public class FirstScreen implements Screen {
         // Draw tower selection UI if visible
         towerUIManager.drawTowerMenu(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), textureManager);
 
-        String info = "1 EASY  2 NORMAL  3 HARD  R REGEN | Difficulty: " + currentDifficulty
+        String info = "1 EASY  2 NORMAL  3 HARD  R RESTART | Difficulty: " + currentDifficulty
                 + " | Roads: " + map.getRoadTileCount()
                 + " | Spots: " + map.countTiles(TileType.TOWER_SPOT);
         font.draw(batch, info, 16, Gdx.graphics.getHeight() - 18);
@@ -121,20 +121,21 @@ public class FirstScreen implements Screen {
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             currentDifficulty = MapDifficulty.EASY;
-            regenerateMap();
+            regenerateMap(false);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
             currentDifficulty = MapDifficulty.NORMAL;
-            regenerateMap();
+            regenerateMap(false);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
             currentDifficulty = MapDifficulty.HARD;
-            regenerateMap();
+            regenerateMap(false);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            regenerateMap();
+            regenerateMap(true);
         }
     }
 
-    private void regenerateMap() {
-        map = mapGenerator.generate(currentDifficulty);
+    private void regenerateMap(boolean keepSeed) {
+        map = keepSeed ? mapGenerator.generate(currentDifficulty, map.getSeed()) : mapGenerator.generate(currentDifficulty);
+        towerUIManager.closeTowerMenu(); // close the menu to avoid creating a tower on the old map
         placedTowers.clear(); // reset towers when generating new map
         regenerateDecorations();
         mapRenderer.updateLayout(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), map);
