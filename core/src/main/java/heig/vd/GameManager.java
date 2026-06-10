@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class GameManager {
     private final int INITIAL_HEALTH = 20;
-    private final int INITIAL_MONEY = 100;
+    private final int INITIAL_MONEY = 500;
     private final int MONEY_PER_KILL = 10;
 
     private GameMap map;
@@ -37,7 +37,7 @@ public class GameManager {
         this.placedTowers = placedTowers;
         this.health = INITIAL_HEALTH;
         this.money = INITIAL_MONEY;
-        this.currentWave = 0;
+        this.currentWave = 2;
         this.waveInProgress = false;
         this.waveSpawnTimer = 0;
         this.gameOver = false;
