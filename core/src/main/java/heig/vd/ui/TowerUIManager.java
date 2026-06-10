@@ -156,9 +156,10 @@ public class TowerUIManager {
                 batch.draw(texture, spriteX, spriteY, spriteSize, spriteSize);
 
 
-                // Draw tower name below the sprite
+                // Draw tower name and price below the sprite
                 font.setColor(1, 1, 1, 1);
                 font.draw(batch, towerType.getDisplayName(), cellX, cellY - 5);
+                font.draw(batch, "Price: $" + towerType.getPrice(), cellX, cellY - 20);
             }
         }
     }
