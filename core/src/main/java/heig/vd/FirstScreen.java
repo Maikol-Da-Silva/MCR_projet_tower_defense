@@ -108,6 +108,7 @@ public class FirstScreen implements Screen {
         renderMobs();
 
         // 4. Rendu des projectiles
+        mapRenderer.drawProjectiles(batch, placedTowers);
 
         // 5. Rendu de l'UI
         towerUIManager.drawTowerMenu(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), textureManager);
@@ -243,11 +244,12 @@ public class FirstScreen implements Screen {
         if (towerUIManager.isUIVisible()) {
             CombatTowerType selectedType = towerUIManager.handleUIClick(screenX, screenY, Gdx.graphics.getHeight(), Gdx.graphics.getWidth());
             if (selectedType != null) {
-                // Place the selected tower on the map
+                // Place the selected tower on the map, only if the player can afford it
                 Position towerPos = towerUIManager.getSelectedTowerPosition();
-                if (towerPos != null) {
+                if (towerPos != null && gameManager.getMoney() >= selectedType.getPrice()) {
                     Tower tower = new Tower(towerPos, selectedType);
                     placedTowers.put(towerPos, tower);
+                    gameManager.spendMoney(selectedType.getPrice());
                 }
             }
             towerUIManager.closeTowerMenu();

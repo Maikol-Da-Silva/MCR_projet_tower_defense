@@ -9,20 +9,16 @@ public class DMGStatus extends DMGHandler{
     public void handle(Mob mob, DMG damage) {
         //TODO trouver des idées
         switch (damage.getType()) {
-            case ARROW:
-                mob.setSpeed(mob.getSpeed() / 2);
-                break;
-            case GLACE:
-                mob.setSpeed(mob.getSpeed() / 2);
-                break;
-            case LIGHTNING:
-                mob.setSpeed(mob.getSpeed() / 2);
+            case ARROW, GLACE, LIGHTNING:
+                mob.setSpeed(mob.getSpeed() * 2);
                 break;
             case EXPLOSION:
                 this.next = new DMGHealth(next);
                 break;
             case POISON:
-                mob.getResistance().removeFirst();
+                if (!mob.getResistance().isEmpty()) {
+                    mob.getResistance().removeFirst();
+                }
                 break;
         }
 

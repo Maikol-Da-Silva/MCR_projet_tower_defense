@@ -30,6 +30,9 @@ public class TextureManager {
     // Combat tower textures (loaded on demand)
     private Map<CombatTowerType, Texture> combatTowerTextures = new HashMap<>();
 
+    // Projectile textures, one per tower type (loaded on demand)
+    private Map<CombatTowerType, Texture> projectileTextures = new HashMap<>();
+
     /**
      * Loads all textures and splits animated sheets.
      * Called once during Screen.show().
@@ -97,6 +100,10 @@ public class TextureManager {
             disposeTexture(texture);
         }
         combatTowerTextures.clear();
+        for (Texture texture : projectileTextures.values()) {
+            disposeTexture(texture);
+        }
+        projectileTextures.clear();
     }
 
     // --- Getters for renderer use ---
@@ -143,6 +150,29 @@ public class TextureManager {
             combatTowerTextures.put(towerType, texture);
         } catch (Exception e) {
             System.err.println("Failed to load combat tower texture: " + towerType.getAssetPath());
+        }
+    }
+
+    /**
+     * Get the projectile texture for a specific combat tower type.
+     * Loads the texture on first access, then caches it.
+     */
+    public Texture getProjectileTexture(CombatTowerType towerType) {
+        if (!projectileTextures.containsKey(towerType)) {
+            loadProjectileTexture(towerType);
+        }
+        return projectileTextures.get(towerType);
+    }
+
+    /**
+     * Loads and caches a projectile texture.
+     */
+    private void loadProjectileTexture(CombatTowerType towerType) {
+        try {
+            Texture texture = loadTexture(towerType.getProjectileAssetPath());
+            projectileTextures.put(towerType, texture);
+        } catch (Exception e) {
+            System.err.println("Failed to load projectile texture: " + towerType.getProjectileAssetPath());
         }
     }
 

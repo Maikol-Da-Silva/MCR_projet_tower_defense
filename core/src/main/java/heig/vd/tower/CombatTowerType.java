@@ -7,14 +7,15 @@ import heig.vd.utils.DmgType;
  * Each type has a unique sprite asset and characteristics.
  */
 public enum CombatTowerType {
-    ARCHER("Towers/Combat Towers/spr_tower_archer.png", 50, 8, 2, DmgType.ARROW, 20 ),
-    CANNON("Towers/Combat Towers/spr_tower_cannon.png", 100, 5, 3, DmgType.EXPLOSION, 40),
-    CROSSBOW("Towers/Combat Towers/spr_tower_crossbow.png", 75, 7, 2, DmgType.ARROW, 15 ),
-    ICE_WIZARD("Towers/Combat Towers/spr_tower_ice_wizard.png", 60, 9, 1, DmgType.GLACE,15 ),
-    LIGHTNING("Towers/Combat Towers/spr_tower_lightning_tower.png", 90, 6, 2, DmgType.LIGHTNING, 35 ),
-    POISON_WIZARD("Towers/Combat Towers/spr_tower_poison_wizard.png", 70, 8, 1, DmgType.POISON, 30);
+    ARCHER("Towers/Combat Towers/spr_tower_archer.png", "Towers/Combat Towers Projectiles/spr_tower_archer_projectile.png", 50, 8, 2, DmgType.ARROW, 20 ),
+    CANNON("Towers/Combat Towers/spr_tower_cannon.png", "Towers/Combat Towers Projectiles/spr_tower_cannon_projectile.png", 100, 5, 3, DmgType.EXPLOSION, 40),
+    CROSSBOW("Towers/Combat Towers/spr_tower_crossbow.png", "Towers/Combat Towers Projectiles/spr_tower_crossbow_projectile.png", 75, 7, 2, DmgType.ARROW, 15 ),
+    ICE_WIZARD("Towers/Combat Towers/spr_tower_ice_wizard.png", "Towers/Combat Towers Projectiles/spr_tower_ice_wizard_projectile.png", 60, 9, 1, DmgType.GLACE,15 ),
+    LIGHTNING("Towers/Combat Towers/spr_tower_lightning_tower.png", "Towers/Combat Towers Projectiles/spr_tower_lightning_tower_projectile.png", 90, 6, 2, DmgType.LIGHTNING, 35 ),
+    POISON_WIZARD("Towers/Combat Towers/spr_tower_poison_wizard.png", "Towers/Combat Towers Projectiles/spr_tower_poison_wizard_projectile.png", 70, 8, 1, DmgType.POISON, 30);
 
     private final String assetPath;
+    private final String projectileAssetPath;
     private final int damage;
     private final int range;
     private final int fireRate;
@@ -22,8 +23,9 @@ public enum CombatTowerType {
     private final int price;
 
 
-    CombatTowerType(String assetPath, int damage, int range, int fireRate, DmgType damageType, int price) {
+    CombatTowerType(String assetPath, String projectileAssetPath, int damage, int range, int fireRate, DmgType damageType, int price) {
         this.assetPath = assetPath;
+        this.projectileAssetPath = projectileAssetPath;
         this.damage = damage;
         this.range = range;
         this.fireRate = fireRate;
@@ -33,6 +35,10 @@ public enum CombatTowerType {
 
     public String getAssetPath() {
         return assetPath;
+    }
+
+    public String getProjectileAssetPath() {
+        return projectileAssetPath;
     }
 
     public int getDamage() {

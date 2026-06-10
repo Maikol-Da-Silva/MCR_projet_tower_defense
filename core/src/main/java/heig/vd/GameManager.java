@@ -15,7 +15,8 @@ import java.util.Map;
  */
 public class GameManager {
     private final int INITIAL_HEALTH = 20;
-    private final int INITIAL_MONEY = 500;
+    private final int INITIAL_MONEY = 100;
+    private final int MONEY_PER_KILL = 10;
 
     private GameMap map;
     private MobManager mobManager;
@@ -77,7 +78,7 @@ public class GameManager {
      */
     private void startWave() {
         currentWave++;
-        mobManager = new MobManager(2 + currentWave * 2, 100 + currentWave * 10, map.getSpawnPoint());
+        mobManager = new MobManager(2 + currentWave * 2, 200 + currentWave * 50, map.getSpawnPoint());
         mobManager.createWave();
         waveInProgress = true;
         System.out.println("Wave " + currentWave + " started!");
@@ -98,6 +99,14 @@ public class GameManager {
 
         for (int i = 0; i < mobManager.getMobs().size(); i++) {
             var mob = mobManager.getMobs().get(i);
+
+            // Mob tué : on le retire et on gagne de l'argent (avant même de le déplacer)
+            if (mob.getCurrentHealth() <= 0) {
+                money += MONEY_PER_KILL;
+                mobsToRemove.add(i);
+                System.out.println("Mob killed! Money: $" + money);
+                continue;
+            }
 
             if (!mob.canMove(deltaTime)) {
                 continue;
@@ -129,7 +138,7 @@ public class GameManager {
 
         }
 
-        // Supprimer les mobs qui ont échappé
+        // Supprimer les mobs qui ont échappé ou ont été tuésd
         for (int i = mobsToRemove.size() - 1; i >= 0; i--) {
             mobManager.getMobs().remove((int) mobsToRemove.get(i));
         }
@@ -153,7 +162,7 @@ public class GameManager {
      */
     private void updateTowers(float deltaTime) {
         for (Tower tower : placedTowers.values()) {
-            //tower.update(deltaTime, mobManager != null ? mobManager.getMobs() : new ArrayList<>());
+            tower.update(deltaTime, mobManager != null ? mobManager.getMobs() : new ArrayList<>());
         }
     }
 

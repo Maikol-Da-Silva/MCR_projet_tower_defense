@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import heig.vd.map.GameMap;
 import heig.vd.map.TileType;
 import heig.vd.mob.Mob;
+import heig.vd.tower.Projectile;
 import heig.vd.tower.Tower;
 import heig.vd.utils.Position;
 import heig.vd.utils.TypeMob;
@@ -177,6 +178,30 @@ public class MapRenderer {
     }
 
 
+
+    /**
+     * Draws all in-flight projectiles, pulled from each placed tower.
+     */
+    public void drawProjectiles(SpriteBatch batch, Map<Position, Tower> placedTowers) {
+        if (tileSize <= 0) {
+            return;
+        }
+
+        float size = tileSize * 0.5f;
+        for (Tower tower : placedTowers.values()) {
+            for (Projectile projectile : tower.getProjectiles()) {
+                Texture texture = textureManager.getProjectileTexture(projectile.getType());
+                if (texture == null) {
+                    continue;
+                }
+
+                Position pos = projectile.getPosition();
+                float drawX = offsetX + pos.getCol() * tileSize + (tileSize - size) / 2f;
+                float drawY = offsetY + pos.getRow() * tileSize + (tileSize - size) / 2f;
+                batch.draw(texture, drawX, drawY, size, size);
+            }
+        }
+    }
 
     /**
      * Converts screen coordinates to map grid coordinates.

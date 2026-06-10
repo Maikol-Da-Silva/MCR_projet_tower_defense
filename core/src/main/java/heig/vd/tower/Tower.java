@@ -2,12 +2,17 @@ package heig.vd.tower;
 
 import heig.vd.mob.*;
 import heig.vd.utils.Position;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Tower {
+    private static final float RELOAD_TIME = 20f;
+
     private Position position;
     private CombatTowerType type;
     private float cooldownTimer = 0f;
+
+    private final List<Projectile> projectiles = new ArrayList<>();
 
     public Tower(Position position, CombatTowerType type) {
         this.position = position;
@@ -47,11 +52,19 @@ public class Tower {
     public int getFireRate() { return type.getFireRate(); }
 
     /**
-     * Look for mobs in rage and attack if we can
-     * @param delta
-     * @param mobs
+     * Look for mobs in range and attack if we can, and advance this tower's
+     * in-flight projectiles.
      */
     public void update(float delta, List<Mob> mobs) {
+        // Move existing projectiles; drop the ones that reached their target.
+        for (int i = projectiles.size() - 1; i >= 0; i--) {
+            Projectile projectile = projectiles.get(i);
+            projectile.update(delta);
+            if (projectile.hasArrived()) {
+                projectiles.remove(i);
+            }
+        }
+
         // Decrement cooldown timer
         cooldownTimer -= delta;
 
@@ -62,10 +75,19 @@ public class Tower {
 
                 // resets cooldown timer
                 // each fire rate is two time previous than the one before
-                // currently level 1 shoots one DMG per 3 seconds
-                cooldownTimer = 3.0f /(float)(Math.pow(2,getFireRate()-1)); // Reset cooldown based on fire rate;
+                cooldownTimer = RELOAD_TIME / getFireRate();
+
+                // spawn the visual projectile, using the tower's fire rate as its travel speed
+                projectiles.add(new Projectile(position, target.getPosition(), type, getFireRate()));
             }
         }
+    }
+
+    /**
+     * The projectiles this tower currently has in flight (for rendering).
+     */
+    public List<Projectile> getProjectiles() {
+        return projectiles;
     }
 
     private Mob findTarget(List<Mob> mobs) {
