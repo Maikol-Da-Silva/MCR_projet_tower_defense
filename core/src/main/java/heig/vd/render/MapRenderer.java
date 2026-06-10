@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import heig.vd.map.GameMap;
 import heig.vd.map.TileType;
+import heig.vd.mob.Mob;
 import heig.vd.tower.Tower;
 import heig.vd.utils.Position;
 
@@ -109,6 +110,17 @@ public class MapRenderer {
 
         drawAnimatedFrames(batch, textureManager.getCastleFrames(), drawX, drawY,
                 tileSize * map.getCastleWidth(), tileSize * map.getCastleHeight());
+    }
+
+    /**
+     * Draws a single mob on the map.
+     */
+    public void drawMob(SpriteBatch batch, Mob mob){
+        Position mobPos = mob.getPosition();
+        float drawX = offsetX + mobPos.getCol() * tileSize;
+        float drawY = offsetY + mobPos.getRow() * tileSize;
+
+        drawAnimatedFrames(batch, textureManager.getMobsFrames(), drawX, drawY, tileSize, tileSize);
     }
 
     /**

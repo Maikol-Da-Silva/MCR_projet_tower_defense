@@ -123,21 +123,8 @@ public class FirstScreen implements Screen {
             return;
         }
 
-        final int UI_HEIGHT = 56;
-        final int SCREEN_PADDING = 16;
-        final int MIN_TILE_SIZE = 8;
-        final int MAX_TILE_SIZE = 96;
-
-        int availableWidth = Math.max(1, Gdx.graphics.getWidth() - SCREEN_PADDING * 2);
-        int availableHeight = Math.max(1, Gdx.graphics.getHeight() - UI_HEIGHT - SCREEN_PADDING * 2);
-        int tileSize = Math.clamp(Math.min(availableWidth / map.getWidth(), availableHeight / map.getHeight()), MIN_TILE_SIZE, MAX_TILE_SIZE);
-
         for (var mob : gameManager.getMobManager().getMobs()) {
-            Position mobPos = mob.getPosition();
-            float drawY = mobPos.getRow() * tileSize;
-            float drawX = mobPos.getCol() * tileSize;
-
-            batch.draw(textureManager.getMobsFrames()[0], drawX, drawY, tileSize, tileSize);
+            mapRenderer.drawMob(batch, mob);
         }
     }
 

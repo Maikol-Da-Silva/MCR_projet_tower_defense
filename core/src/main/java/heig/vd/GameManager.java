@@ -77,7 +77,7 @@ public class GameManager {
      */
     private void startWave() {
         currentWave++;
-        mobManager = new MobManager(4 + currentWave * 2, 100 + currentWave * 10, map.getSpawnPoint());
+        mobManager = new MobManager(2 + currentWave * 2, 100 + currentWave * 10, map.getSpawnPoint());
         mobManager.createWave();
         waveInProgress = true;
         System.out.println("Wave " + currentWave + " started!");
@@ -104,7 +104,6 @@ public class GameManager {
 
         for (int i = 0; i < mobManager.getMobs().size(); i++) {
             var mob = mobManager.getMobs().get(i);
-
 
             // Calculer la position suivante
             Position currentPos = mob.getPosition();
