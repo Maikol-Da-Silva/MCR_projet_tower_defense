@@ -36,7 +36,7 @@ public class GameManager {
         this.placedTowers = placedTowers;
         this.health = INITIAL_HEALTH;
         this.money = INITIAL_MONEY;
-        this.currentWave = 0;
+        this.currentWave = 2;
         this.waveInProgress = false;
         this.waveSpawnTimer = 0;
         this.gameOver = false;
@@ -77,7 +77,7 @@ public class GameManager {
      */
     private void startWave() {
         currentWave++;
-        mobManager = new MobManager(2 + currentWave * 2, 100 + currentWave * 10, map.getSpawnPoint());
+        mobManager = new MobManager(currentWave, 100 + currentWave * 10, map.getSpawnPoint());
         mobManager.createWave();
         waveInProgress = true;
         System.out.println("Wave " + currentWave + " started!");
