@@ -14,7 +14,8 @@ public class Mob {
     private boolean shield;
     private Position position;
 
-    public  Mob(int speed, int health, DmgType ...resistance) {
+    public  Mob(Position position, int speed, int health, DmgType ...resistance) {
+        this.position = position;
         this.speed = speed;
         this.health = health;
         this.currentHealth = health;

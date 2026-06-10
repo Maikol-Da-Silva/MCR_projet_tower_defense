@@ -105,7 +105,7 @@ public class GameManager {
             var mob = mobManager.getMobs().get(i);
 
             // Calculer la position suivante
-            Position currentPos = mob.getPos();
+            Position currentPos = mob.getPosition();
             int currentIndex = getPathIndex(currentPos);
             int nextIndex = currentIndex + 1;
 
@@ -118,7 +118,7 @@ public class GameManager {
             } else {
                 // Déplacer le mob vers la prochaine position
                 Position nextPosition = map.getPath().get(nextIndex);
-                mob.setPos(nextPosition);
+                mob.setPosition(nextPosition);
             }
         }
 

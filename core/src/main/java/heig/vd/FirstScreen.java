@@ -134,7 +134,7 @@ public class FirstScreen implements Screen {
             Math.min(availableWidth / map.getWidth(), availableHeight / map.getHeight())));
 
         for (var mob : gameManager.getMobManager().getMobs()) {
-            Position mobPos = mob.getPos();
+            Position mobPos = mob.getPosition();
             float drawX = mobPos.getRow() * tileSize;
             float drawY = mobPos.getCol() * tileSize;
 
