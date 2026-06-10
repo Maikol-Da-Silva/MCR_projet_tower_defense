@@ -2,6 +2,7 @@ package heig.vd.mob;
 
 import heig.vd.utils.DmgType;
 import heig.vd.utils.Position;
+import heig.vd.utils.TypeMob;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +15,16 @@ public class Mob {
     private Position position;
     private float moveCooldown = 0f;
     private float moveInterval;
+    private final TypeMob type;
 
 
-    public  Mob(Position position, float speed, int health, DmgType ...resistance) {
+    public  Mob(Position position, float speed, int health, TypeMob type, DmgType ...resistance) {
         this.position = position;
         this.moveInterval = speed;
         this.health = health;
         this.currentHealth = health;
         this.resistances = List.of(resistance);
+        this.type = type;
     }
 
     public void takeDamage(DMGHandler dmgHandler, DMG dmg) {
@@ -47,6 +50,7 @@ public class Mob {
     public Position getPosition() {return position;}
     public void setPosition(Position position) {this.position = position;}
 
+    public TypeMob getType() {return type;}
 
     public boolean canMove(float deltaTime) {
         moveCooldown += deltaTime;

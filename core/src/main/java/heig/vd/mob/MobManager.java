@@ -1,9 +1,11 @@
 package heig.vd.mob;
 
 import heig.vd.utils.Position;
+import heig.vd.utils.TypeMob;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MobManager {
     /* Constants */
@@ -27,13 +29,15 @@ public class MobManager {
 
     public void createWave(){
         mobs.clear();
+        Random random = new Random();
 
         for (int i = 0; i < nbMob - NB_BOSS; i++){
-            mobs.add(new Mob(startpos, SPEED, mobHealth));
+            mobs.add(new Mob(startpos, SPEED, mobHealth, TypeMob.values()[random.nextInt(TypeMob.values().length)]));
         }
 
         for (int i = 0; i < NB_BOSS; i++){
-            mobs.add(new Mob(startpos, SPEED / BOSS_FACTOR, mobHealth * BOSS_FACTOR));
+            mobs.add(new Mob(startpos, SPEED * BOSS_FACTOR, mobHealth * BOSS_FACTOR,TypeMob.values()[random.nextInt(TypeMob.values().length)]));
+            mobs.get(i).setShield(true); //Les boss ont un shield
         }
     }
 

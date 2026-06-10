@@ -25,7 +25,7 @@ public class TextureManager {
 
     private Texture[] decorationTextures;
     private Texture[] mobsTextures;
-    private TextureRegion[] mobsFrames;
+    private TextureRegion[][] mobsFrames;
 
     // Combat tower textures (loaded on demand)
     private Map<CombatTowerType, Texture> combatTowerTextures = new HashMap<>();
@@ -72,7 +72,14 @@ public class TextureManager {
             "Enemies/spr_zombie.png"
         );
 
-        mobsFrames = splitAnimatedSheet(mobsTextures[0]);
+        //On initialise le tableau de frames pour tous les mobs
+        mobsFrames = new TextureRegion[mobsTextures.length][];
+
+        for (int i = 0; i < mobsTextures.length; i++) {
+
+            mobsFrames[i] = new TextureRegion[4];
+            mobsFrames[i] = splitAnimatedSheet(mobsTextures[i]);
+        }
     }
 
     /**
@@ -114,7 +121,7 @@ public class TextureManager {
         return decorationTextures;
     }
     public Texture[] getMobsTextures() {return mobsTextures;}
-    public TextureRegion[] getMobsFrames() {return mobsFrames;}
+    public TextureRegion[][] getMobsFrames() {return mobsFrames;}
 
     /**
      * Get the frames for a specific combat tower type.

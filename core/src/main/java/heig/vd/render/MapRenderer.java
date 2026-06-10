@@ -1,13 +1,17 @@
 package heig.vd.render;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import heig.vd.map.GameMap;
 import heig.vd.map.TileType;
 import heig.vd.mob.Mob;
 import heig.vd.tower.Tower;
 import heig.vd.utils.Position;
+import heig.vd.utils.TypeMob;
 
 import java.util.Map;
 
@@ -115,12 +119,39 @@ public class MapRenderer {
     /**
      * Draws a single mob on the map.
      */
-    public void drawMob(SpriteBatch batch, Mob mob){
+    public void drawMob(SpriteBatch batch, ShapeRenderer shapeRenderer , Mob mob){
         Position mobPos = mob.getPosition();
         float drawX = offsetX + mobPos.getCol() * tileSize;
         float drawY = offsetY + mobPos.getRow() * tileSize;
 
-        drawAnimatedFrames(batch, textureManager.getMobsFrames(), drawX, drawY, tileSize, tileSize);
+        drawAnimatedFrames(batch, textureManager.getMobsFrames()[mob.getType().ordinal()], drawX, drawY, tileSize, tileSize);
+
+        batch.end();
+        //Test barre de vie
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        // Bordure noire
+        shapeRenderer.setColor(Color.BLACK);
+        shapeRenderer.rect(drawX - 1, drawY + 35, 34, 6);
+
+        if (!mob.isShield()){
+            // fond
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.rect(drawX, drawY + 36, 32, 4);
+
+            // vie restante
+            shapeRenderer.setColor(Color.GREEN);
+            shapeRenderer.rect(drawX, drawY + 36, 32 * mob.getCurrentHealth() / (float) mob.getHealth(), 4);
+
+        }else {
+            shapeRenderer.setColor(Color.WHITE);
+            shapeRenderer.rect(drawX, drawY + 36, 32, 4);
+        }
+
+        shapeRenderer.end();
+
+        batch.begin();
     }
 
     /**

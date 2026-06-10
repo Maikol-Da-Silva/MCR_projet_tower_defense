@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import heig.vd.map.GameMap;
 import heig.vd.map.MapDifficulty;
 import heig.vd.map.MapGenerator;
@@ -33,6 +34,7 @@ public class FirstScreen implements Screen {
 
     private SpriteBatch batch;
     private BitmapFont font;
+    private ShapeRenderer shapeRenderer;
 
     private TextureManager textureManager;
     private MapRenderer mapRenderer;
@@ -51,6 +53,7 @@ public class FirstScreen implements Screen {
     public void show() {
         batch = new SpriteBatch();
         font = new BitmapFont();
+        shapeRenderer = new ShapeRenderer();
 
         textureManager = new TextureManager();
         textureManager.loadAll();
@@ -124,7 +127,7 @@ public class FirstScreen implements Screen {
         }
 
         for (var mob : gameManager.getMobManager().getMobs()) {
-            mapRenderer.drawMob(batch, mob);
+            mapRenderer.drawMob(batch, shapeRenderer , mob);
         }
     }
 
