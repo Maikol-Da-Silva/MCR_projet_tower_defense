@@ -26,7 +26,7 @@ public class GameManager {
     private int currentWave;
     private boolean waveInProgress;
     private float waveSpawnTimer;
-    private float waveDelay = 2.0f; // Délai avant spawn de la vague (en secondes)
+    private float waveDelay = 1f; // Délai avant spawn de la vague (en secondes)
 
     private boolean gameOver;
     private boolean gameWon;
@@ -87,12 +87,6 @@ public class GameManager {
      * Met à jour la position et l'état des mobs
      */
     private void updateMobs(float deltaTime) {
-        try {
-            Thread.sleep((long) deltaTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         if (mobManager == null || mobManager.getMobs().isEmpty()) {
             waveInProgress = false;
             waveSpawnTimer = waveDelay;
@@ -104,6 +98,10 @@ public class GameManager {
 
         for (int i = 0; i < mobManager.getMobs().size(); i++) {
             var mob = mobManager.getMobs().get(i);
+
+            if (!mob.canMove(deltaTime)) {
+                continue;
+            }
 
             // Calculer la position suivante
             Position currentPos = mob.getPosition();
@@ -131,7 +129,7 @@ public class GameManager {
 
         }
 
-        // Supprimer les mobs qui ont échappé (en ordre inverse pour éviter les index invalidés)
+        // Supprimer les mobs qui ont échappé
         for (int i = mobsToRemove.size() - 1; i >= 0; i--) {
             mobManager.getMobs().remove((int) mobsToRemove.get(i));
         }

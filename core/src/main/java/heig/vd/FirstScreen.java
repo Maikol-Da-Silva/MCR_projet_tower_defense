@@ -78,7 +78,7 @@ public class FirstScreen implements Screen {
         handleInput();
 
         // 2. UPDATE - Mettre à jour la logique du jeu
-        gameManager.update(500);
+        gameManager.update(0.1f);
 
         // 3. DRAW - Rendu graphique
         renderFrame();

@@ -9,7 +9,7 @@ public class MobManager {
     /* Constants */
     private final int BOSS_FACTOR = 2;
     private final int NB_BOSS = 2;
-    private final int SPEED = 1;
+    private final float SPEED = 4f;
 
     /* Variables */
     private final int nbMob;
@@ -33,7 +33,7 @@ public class MobManager {
         }
 
         for (int i = 0; i < NB_BOSS; i++){
-            mobs.add(new Mob(startpos, SPEED * BOSS_FACTOR, mobHealth * BOSS_FACTOR));
+            mobs.add(new Mob(startpos, SPEED / BOSS_FACTOR, mobHealth * BOSS_FACTOR));
         }
     }
 

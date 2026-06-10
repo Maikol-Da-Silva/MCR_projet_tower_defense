@@ -7,16 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Mob {
-    private int speed;
     private int health;
     private int currentHealth;
     private List<DmgType> resistances;
     private boolean shield;
     private Position position;
+    private float moveCooldown = 0f;
+    private float moveInterval;
 
-    public  Mob(Position position, int speed, int health, DmgType ...resistance) {
+
+    public  Mob(Position position, float speed, int health, DmgType ...resistance) {
         this.position = position;
-        this.speed = speed;
+        this.moveInterval = speed;
         this.health = health;
         this.currentHealth = health;
         this.resistances = List.of(resistance);
@@ -27,8 +29,8 @@ public class Mob {
     }
 
     /* Getter / Setter */
-    public int getSpeed() {return speed;}
-    public void setSpeed(int speed) {this.speed = speed;}
+    public float getSpeed() {return moveInterval;}
+    public void setSpeed(float speed) {this.moveInterval = speed;}
 
     public int getHealth() {return health;}
     public void setHealth(int health) {this.health = health;}
@@ -44,4 +46,16 @@ public class Mob {
 
     public Position getPosition() {return position;}
     public void setPosition(Position position) {this.position = position;}
+
+
+    public boolean canMove(float deltaTime) {
+        moveCooldown += deltaTime;
+
+        if (moveCooldown >= moveInterval) {
+            moveCooldown -= moveInterval;
+            return true;
+        }
+
+        return false;
+    }
 }
