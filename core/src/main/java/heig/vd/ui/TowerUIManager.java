@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import heig.vd.Tower.CombatTowerType;
+import heig.vd.tower.CombatTowerType;
 import heig.vd.render.TextureManager;
 import heig.vd.utils.Position;
 

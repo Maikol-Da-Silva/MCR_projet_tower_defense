@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import heig.vd.map.GameMap;
 import heig.vd.map.TileType;
-import heig.vd.Tower.Tower;
+import heig.vd.tower.Tower;
 import heig.vd.utils.Position;
 
 import java.util.Map;
@@ -132,6 +132,8 @@ public class MapRenderer {
             batch.draw(texture, drawX, drawY, tileSize, tileSize);
         }
     }
+
+
 
     /**
      * Converts screen coordinates to map grid coordinates.

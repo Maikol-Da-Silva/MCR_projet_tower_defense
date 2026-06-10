@@ -1,4 +1,4 @@
-package heig.vd.Tower;
+package heig.vd.tower;
 
 import heig.vd.utils.Position;
 import heig.vd.map.GameMap;

@@ -1,9 +1,5 @@
 package heig.vd.mob;
 
-import heig.vd.utils.DmgType;
-
-import java.util.List;
-
 public class DMGStatus extends DMGHandler{
     public DMGStatus(DMGHandler next) {
         super(next);

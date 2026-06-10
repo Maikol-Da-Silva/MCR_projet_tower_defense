@@ -1,0 +1,183 @@
+package heig.vd;
+
+import heig.vd.map.GameMap;
+import heig.vd.mob.MobManager;
+import heig.vd.tower.Tower;
+import heig.vd.utils.Position;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Gère toute la logique du jeu (mobs, tours, physique, économie)
+ * Séparé du rendu pour respecter le pattern Model-View-Controller
+ */
+public class GameManager {
+    private final int INITIAL_HEALTH = 20;
+    private final int INITIAL_MONEY = 500;
+
+    private GameMap map;
+    private MobManager mobManager;
+    private Map<Position, Tower> placedTowers;
+
+    private int health;
+    private int money;
+    private int currentWave;
+    private boolean waveInProgress;
+    private float waveSpawnTimer;
+    private float waveDelay = 2.0f; // Délai avant spawn de la vague (en secondes)
+
+    private boolean gameOver;
+    private boolean gameWon;
+
+    public GameManager(GameMap map, Map<Position, Tower> placedTowers) {
+        this.map = map;
+        this.placedTowers = placedTowers;
+        this.health = INITIAL_HEALTH;
+        this.money = INITIAL_MONEY;
+        this.currentWave = 0;
+        this.waveInProgress = false;
+        this.waveSpawnTimer = 0;
+        this.gameOver = false;
+        this.gameWon = false;
+    }
+
+    /**
+     * Met à jour la logique du jeu à chaque frame
+     * @param deltaTime Temps écoulé depuis la dernière frame (en secondes)
+     */
+    public void update(float deltaTime) {
+        if (gameOver || gameWon) {
+            return;
+        }
+
+        // Gérer le spawn des vagues
+        if (!waveInProgress) {
+            waveSpawnTimer -= deltaTime;
+            if (waveSpawnTimer <= 0) {
+                startWave();
+            }
+        }
+
+        // Mettre à jour les mobs en cours
+        if (waveInProgress) {
+            updateMobs(deltaTime);
+        }
+
+        // Mettre à jour les tours
+        updateTowers(deltaTime);
+
+        // Vérifier les conditions de fin
+        checkGameState();
+    }
+
+    /**
+     * Démarre une nouvelle vague de mobs
+     */
+    private void startWave() {
+        currentWave++;
+        mobManager = new MobManager(10 + currentWave * 2, 100 + currentWave * 10, map.getSpawnPoint());
+        mobManager.createWave();
+        waveInProgress = true;
+        System.out.println("Wave " + currentWave + " started!");
+    }
+
+    /**
+     * Met à jour la position et l'état des mobs
+     */
+    private void updateMobs(float deltaTime) {
+        try {
+            Thread.sleep((long) deltaTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if (mobManager == null || mobManager.getMobs().isEmpty()) {
+            waveInProgress = false;
+            waveSpawnTimer = waveDelay;
+            return;
+        }
+
+        List<Integer> mobsToRemove = new ArrayList<>();
+
+        for (int i = 0; i < mobManager.getMobs().size(); i++) {
+            var mob = mobManager.getMobs().get(i);
+
+            // Calculer la position suivante
+            Position currentPos = mob.getPos();
+            int currentIndex = getPathIndex(currentPos);
+            int nextIndex = currentIndex + 1;
+
+            // Vérifier si le mob a atteint la fin
+            if (nextIndex >= map.getPath().size()) {
+                // Le mob a échappé
+                health--;
+                mobsToRemove.add(i);
+                System.out.println("Mob escaped! Health: " + health);
+            } else {
+                // Déplacer le mob vers la prochaine position
+                Position nextPosition = map.getPath().get(nextIndex);
+                mob.setPos(nextPosition);
+            }
+        }
+
+        // Supprimer les mobs qui ont échappé (en ordre inverse pour éviter les index invalidés)
+        for (int i = mobsToRemove.size() - 1; i >= 0; i--) {
+            mobManager.getMobs().remove((int) mobsToRemove.get(i));
+        }
+    }
+
+    /**
+     * Obtient l'index du chemin où se trouve une position
+     */
+    private int getPathIndex(Position pos) {
+        List<Position> path = map.getPath();
+        for (int i = 0; i < path.size(); i++) {
+            if (path.get(i).equals(pos)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Met à jour la logique des tours (tirs, recharge, etc.)
+     */
+    private void updateTowers(float deltaTime) {
+        for (Tower tower : placedTowers.values()) {
+            //tower.update(deltaTime, mobManager != null ? mobManager.getMobs() : new ArrayList<>());
+        }
+    }
+
+    /**
+     * Vérifie les conditions de fin de jeu
+     */
+    private void checkGameState() {
+        // Défaite : santé à 0
+        if (health <= 0) {
+            gameOver = true;
+            System.out.println("Game Over! You lost!");
+        }
+
+        // Victoire : tous les mobs de la dernière vague sont morts et aucune vague supplémentaire
+        if (waveInProgress && mobManager != null && mobManager.getMobs().isEmpty() && currentWave >= 10) {
+            gameWon = true;
+            System.out.println("You won!");
+        }
+    }
+
+    // Getters
+    public int getHealth() { return health; }
+    public int getMoney() { return money; }
+    public int getCurrentWave() { return currentWave; }
+    public boolean isGameOver() { return gameOver; }
+    public boolean isGameWon() { return gameWon; }
+    public MobManager getMobManager() { return mobManager; }
+    public boolean isWaveInProgress() { return waveInProgress; }
+
+    // Setters
+    public void addMoney(int amount) { this.money += amount; }
+    public void spendMoney(int amount) { this.money -= amount; }
+}
+

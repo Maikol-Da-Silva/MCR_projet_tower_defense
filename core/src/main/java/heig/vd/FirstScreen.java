@@ -12,10 +12,11 @@ import heig.vd.map.MapDifficulty;
 import heig.vd.map.MapGenerator;
 import heig.vd.map.TileType;
 import heig.vd.render.MapRenderer;
+import heig.vd.GameManager;
 import heig.vd.render.TextureManager;
 import heig.vd.render.MapRenderer.DecorationPlacement;
-import heig.vd.Tower.CombatTowerType;
-import heig.vd.Tower.Tower;
+import heig.vd.tower.CombatTowerType;
+import heig.vd.tower.Tower;
 import heig.vd.ui.TowerUIManager;
 import heig.vd.utils.Position;
 
@@ -44,6 +45,8 @@ public class FirstScreen implements Screen {
     private final List<DecorationPlacement> decorationPlacements = new ArrayList<>();
     private final Map<Position, Tower> placedTowers = new HashMap<>(); // towers placed on map
 
+    private GameManager gameManager; // Gère la logique du jeu
+
     @Override
     public void show() {
         batch = new SpriteBatch();
@@ -69,25 +72,91 @@ public class FirstScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        // ===== GAME LOOP =====
+
+        // 1. INPUT - Gérer les entrées utilisateur
         handleInput();
 
+        // 2. UPDATE - Mettre à jour la logique du jeu
+        gameManager.update(1000);
+
+        // 3. DRAW - Rendu graphique
+        renderFrame();
+    }
+
+    /**
+     * Rendu de tous les éléments du jeu
+     */
+    private void renderFrame() {
+        // Effacer l'écran
         Gdx.gl.glClearColor(0.08f, 0.10f, 0.13f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+
+        // 1. Rendu de la map et décorations
         mapRenderer.drawMapBase(batch, map, decorationPlacements, placedTowers);
         mapRenderer.drawCastle(batch, map);
+
+        // 2. Rendu des tours
         mapRenderer.drawPlacedTowers(batch, placedTowers);
 
-        // Draw tower selection UI if visible
+        // 3. Rendu des mobs
+        renderMobs();
+
+        // 4. Rendu des projectiles
+
+        // 5. Rendu de l'UI
         towerUIManager.drawTowerMenu(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), textureManager);
 
-        String info = "1 EASY  2 NORMAL  3 HARD  R REGEN | Difficulty: " + currentDifficulty
-                + " | Roads: " + map.getRoadTileCount()
-                + " | Spots: " + map.countTiles(TileType.TOWER_SPOT);
-        font.draw(batch, info, 16, Gdx.graphics.getHeight() - 18);
+        // 6. Rendu des informations de débogage/stats
+        drawGameInfo();
 
         batch.end();
+    }
+
+    /**
+     * Rend les mobs sur la map
+     */
+    private void renderMobs() {
+        if (gameManager.getMobManager() == null || gameManager.getMobManager().getMobs().isEmpty()) {
+            return;
+        }
+
+        final int UI_HEIGHT = 56;
+        final int SCREEN_PADDING = 16;
+        final int MIN_TILE_SIZE = 8;
+        final int MAX_TILE_SIZE = 96;
+
+        int availableWidth = Math.max(1, Gdx.graphics.getWidth() - SCREEN_PADDING * 2);
+        int availableHeight = Math.max(1, Gdx.graphics.getHeight() - UI_HEIGHT - SCREEN_PADDING * 2);
+        int tileSize = Math.min(MAX_TILE_SIZE, Math.max(MIN_TILE_SIZE,
+            Math.min(availableWidth / map.getWidth(), availableHeight / map.getHeight())));
+
+        for (var mob : gameManager.getMobManager().getMobs()) {
+            Position mobPos = mob.getPos();
+            float drawX = mobPos.getRow() * tileSize;
+            float drawY = mobPos.getCol() * tileSize;
+
+            batch.draw(textureManager.getMobsFrames()[0], drawY, drawX, tileSize, tileSize);
+        }
+    }
+
+    /**
+     * Affiche les informations du jeu (santé, argent, vague, etc.)
+     */
+    private void drawGameInfo() {
+        String info = "1 EASY  2 NORMAL  3 HARD  R REGEN | Difficulty: " + currentDifficulty
+                + " | Health: " + gameManager.getHealth()
+                + " | Money: $" + gameManager.getMoney()
+                + " | Wave: " + gameManager.getCurrentWave();
+        font.draw(batch, info, 16, Gdx.graphics.getHeight() - 18);
+
+        if (gameManager.isGameOver()) {
+            font.draw(batch, "GAME OVER - YOU LOST!", Gdx.graphics.getWidth() / 2 - 100, Gdx.graphics.getHeight() / 2);
+        } else if (gameManager.isGameWon()) {
+            font.draw(batch, "YOU WON!", Gdx.graphics.getWidth() / 2 - 50, Gdx.graphics.getHeight() / 2);
+        }
     }
 
     @Override
@@ -137,6 +206,7 @@ public class FirstScreen implements Screen {
         map = mapGenerator.generate(currentDifficulty);
         placedTowers.clear(); // reset towers when generating new map
         regenerateDecorations();
+        gameManager = new GameManager(map, placedTowers); // Initialiser le GameManager avec la nouvelle map
         mapRenderer.updateLayout(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), map);
     }
 

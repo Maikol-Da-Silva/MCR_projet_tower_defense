@@ -1,4 +1,4 @@
-package heig.vd.Tower;
+package heig.vd.tower;
 
 import heig.vd.mob.*;
 import heig.vd.utils.Position;

@@ -3,7 +3,7 @@ package heig.vd.render;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import heig.vd.Tower.CombatTowerType;
+import heig.vd.tower.CombatTowerType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +24,8 @@ public class TextureManager {
     private TextureRegion[] towerFrames;
 
     private Texture[] decorationTextures;
+    private Texture[] mobsTextures;
+    private TextureRegion[] mobsFrames;
 
     // Combat tower textures (loaded on demand)
     private Map<CombatTowerType, Texture> combatTowerTextures = new HashMap<>();
@@ -57,6 +59,20 @@ public class TextureManager {
                 "Environment/Decoration/spr_tree_02_normal.png",
                 "Environment/Decoration/spr_tree_02_spruce.png"
         );
+
+        mobsTextures = loadTextures(
+            "Enemies/spr_bat.png",
+            "Enemies/spr_big_slime.png",
+            "Enemies/spr_demon.png",
+            "Enemies/spr_ghost.png",
+            "Enemies/spr_goblin.png",
+            "Enemies/spr_king_slime.png",
+            "Enemies/spr_normal_slime.png",
+            "Enemies/spr_skeleton.png",
+            "Enemies/spr_zombie.png"
+        );
+
+        mobsFrames = splitAnimatedSheet(mobsTextures[0]);
     }
 
     /**
@@ -69,6 +85,7 @@ public class TextureManager {
         disposeTexture(castleTexture);
         disposeTexture(towerTexture);
         disposeTextures(decorationTextures);
+        disposeTextures(mobsTextures);
         for (Texture texture : combatTowerTextures.values()) {
             disposeTexture(texture);
         }
@@ -96,6 +113,8 @@ public class TextureManager {
     public Texture[] getDecorationTextures() {
         return decorationTextures;
     }
+    public Texture[] getMobsTextures() {return mobsTextures;}
+    public TextureRegion[] getMobsFrames() {return mobsFrames;}
 
     /**
      * Get the frames for a specific combat tower type.
