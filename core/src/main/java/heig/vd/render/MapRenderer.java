@@ -35,7 +35,7 @@ public class MapRenderer {
             return;
         }
 
-        final int UI_HEIGHT = 56;
+        final int UI_HEIGHT = 30;
         final int SCREEN_PADDING = 16;
         final int MIN_TILE_SIZE = 8;
         final int MAX_TILE_SIZE = 96;

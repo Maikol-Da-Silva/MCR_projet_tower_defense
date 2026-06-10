@@ -18,8 +18,8 @@ import heig.vd.utils.Position;
 public class TowerUIManager {
     private static final int GRID_COLS = 3;
     private static final int GRID_ROWS = 2;
-    private static final int CELL_SIZE = 70;
-    private static final int PADDING = 15;
+    private static final int CELL_SIZE = 90;
+    private static final int PADDING = 50;
     private static final int UI_WIDTH = GRID_COLS * CELL_SIZE + (GRID_COLS + 1) * PADDING;
     private static final int UI_HEIGHT = GRID_ROWS * CELL_SIZE + (GRID_ROWS + 1) * PADDING + 30;
 
@@ -96,7 +96,7 @@ public class TowerUIManager {
 
                 int cellX = PADDING + col * (CELL_SIZE + PADDING);
                 int invertedRow = (GRID_ROWS - 1) - row;
-                int cellY = PADDING + invertedRow * (CELL_SIZE + PADDING) + 30; // offset for title
+                int cellY = PADDING + invertedRow * (CELL_SIZE + PADDING);
 
                 if (localX >= cellX && localX < cellX + CELL_SIZE &&
                     localY >= cellY && localY < cellY + CELL_SIZE) {

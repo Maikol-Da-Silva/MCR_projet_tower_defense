@@ -2,6 +2,8 @@ package heig.vd.mob;
 
 import heig.vd.utils.DmgType;
 import heig.vd.utils.Position;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Mob {
@@ -10,10 +12,9 @@ public class Mob {
     private int currentHealth;
     private List<DmgType> resistances;
     private boolean shield;
-    private Position pos;
+    private Position position;
 
-    public  Mob(Position pos, int speed, int health, DmgType ...resistance) {
-        this.pos = pos;
+    public  Mob(int speed, int health, DmgType ...resistance) {
         this.speed = speed;
         this.health = health;
         this.currentHealth = health;
@@ -40,6 +41,6 @@ public class Mob {
     public boolean isShield() {return shield;}
     public void setShield(boolean shield) {this.shield = shield;}
 
-    public Position getPos() {return pos;}
-    public void setPos(Position pos) {this.pos = pos;}
+    public Position getPosition() {return position;}
+    public void setPosition(Position position) {this.position = position;}
 }

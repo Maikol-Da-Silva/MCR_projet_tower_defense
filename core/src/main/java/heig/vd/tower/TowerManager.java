@@ -2,6 +2,7 @@ package heig.vd.tower;
 
 import heig.vd.utils.Position;
 import heig.vd.map.GameMap;
+import heig.vd.mob.Mob;
 import java.util.*;
 
 public class TowerManager {
@@ -38,6 +39,12 @@ public class TowerManager {
 
     public void clear() {
         towers.clear();
+    }
+
+    public void update(float delta, List<Mob> mobs) {
+        for (Tower tower : towers.values()) {
+            tower.update(delta, mobs);
+        }
     }
 
 }
