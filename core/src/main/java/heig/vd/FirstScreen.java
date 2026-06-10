@@ -111,7 +111,7 @@ public class FirstScreen implements Screen {
         mapRenderer.drawProjectiles(batch, placedTowers);
 
         // 5. Rendu de l'UI
-        towerUIManager.drawTowerMenu(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), textureManager);
+        towerUIManager.drawTowerMenu(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), textureManager, gameManager.getMoney());
 
         // 6. Rendu des informations de débogage/stats
         drawGameInfo();

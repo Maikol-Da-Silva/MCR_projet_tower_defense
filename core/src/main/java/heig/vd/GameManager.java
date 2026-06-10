@@ -15,8 +15,8 @@ import java.util.Map;
  */
 public class GameManager {
     private final int INITIAL_HEALTH = 20;
-    private final int INITIAL_MONEY = 150;
-    private final int MONEY_PER_KILL = 10;
+    private final int INITIAL_MONEY = 125;
+    private final int MONEY_PER_KILL = 5;
 
     private GameMap map;
     private MobManager mobManager;
@@ -119,7 +119,7 @@ public class GameManager {
 
 
                 // Vérifier si le mob a atteint la fin
-                if (nextIndex >= map.getPath().size()) {
+                if (nextIndex >= map.getPath().size() -1) {
                     // Le mob a échappé
                     health--;
                     mobsToRemove.add(i);

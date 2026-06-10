@@ -112,7 +112,7 @@ public class TowerUIManager {
     /**
      * Draws the tower selection UI.
      */
-    public void drawTowerMenu(SpriteBatch batch, int screenWidth, int screenHeight, TextureManager textureManager) {
+    public void drawTowerMenu(SpriteBatch batch, int screenWidth, int screenHeight, TextureManager textureManager, int money) {
         if (!isUIVisible) {
             return;
         }
@@ -155,6 +155,12 @@ public class TowerUIManager {
                 int spriteY = cellY + (CELL_SIZE - spriteSize) / 2;
                 batch.draw(texture, spriteX, spriteY, spriteSize, spriteSize);
 
+                // Grey overlay on towers the player can't afford
+                if (money < towerType.getPrice()) {
+                    batch.setColor(0.2f, 0.2f, 0.2f, 0.6f);
+                    batch.draw(bgTexture, cellX, cellY, CELL_SIZE, CELL_SIZE);
+                    batch.setColor(1, 1, 1, 1);
+                }
 
                 // Draw tower name and price below the sprite
                 font.setColor(1, 1, 1, 1);
