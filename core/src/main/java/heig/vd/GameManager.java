@@ -77,7 +77,7 @@ public class GameManager {
      */
     private void startWave() {
         currentWave++;
-        mobManager = new MobManager(10 + currentWave * 2, 100 + currentWave * 10, map.getSpawnPoint());
+        mobManager = new MobManager(4 + currentWave * 2, 100 + currentWave * 10, map.getSpawnPoint());
         mobManager.createWave();
         waveInProgress = true;
         System.out.println("Wave " + currentWave + " started!");
@@ -100,26 +100,36 @@ public class GameManager {
         }
 
         List<Integer> mobsToRemove = new ArrayList<>();
+        boolean[] mobNextCase = new boolean[map.getPath().size()];
 
         for (int i = 0; i < mobManager.getMobs().size(); i++) {
             var mob = mobManager.getMobs().get(i);
+
 
             // Calculer la position suivante
             Position currentPos = mob.getPosition();
             int currentIndex = getPathIndex(currentPos);
             int nextIndex = currentIndex + 1;
 
-            // Vérifier si le mob a atteint la fin
-            if (nextIndex >= map.getPath().size()) {
-                // Le mob a échappé
-                health--;
-                mobsToRemove.add(i);
-                System.out.println("Mob escaped! Health: " + health);
-            } else {
-                // Déplacer le mob vers la prochaine position
-                Position nextPosition = map.getPath().get(nextIndex);
-                mob.setPosition(nextPosition);
-            }
+
+                // Vérifier si le mob a atteint la fin
+                if (nextIndex >= map.getPath().size()) {
+                    // Le mob a échappé
+                    health--;
+                    mobsToRemove.add(i);
+                    System.out.println("Mob escaped! Health: " + health);
+                } else {
+                    //On vérifie si un monstre est sur la case d'après
+                    if (!mobNextCase[nextIndex]) {
+                        mobNextCase[currentIndex] = false;
+                        mobNextCase[nextIndex] = true;
+
+                        // Déplacer le mob vers la prochaine position
+                        Position nextPosition = map.getPath().get(nextIndex);
+                        mob.setPosition(nextPosition);
+                    }
+                }
+
         }
 
         // Supprimer les mobs qui ont échappé (en ordre inverse pour éviter les index invalidés)

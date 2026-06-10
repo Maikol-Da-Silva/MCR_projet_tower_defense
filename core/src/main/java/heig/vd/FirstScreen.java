@@ -58,7 +58,7 @@ public class FirstScreen implements Screen {
         mapRenderer = new MapRenderer(textureManager);
         towerUIManager = new TowerUIManager();
 
-        regenerateMap();
+        regenerateMap(false);
 
         // Setup input handler for mouse clicks
         Gdx.input.setInputProcessor(new InputAdapter() {
@@ -78,7 +78,7 @@ public class FirstScreen implements Screen {
         handleInput();
 
         // 2. UPDATE - Mettre à jour la logique du jeu
-        gameManager.update(1000);
+        gameManager.update(500);
 
         // 3. DRAW - Rendu graphique
         renderFrame();
@@ -130,15 +130,14 @@ public class FirstScreen implements Screen {
 
         int availableWidth = Math.max(1, Gdx.graphics.getWidth() - SCREEN_PADDING * 2);
         int availableHeight = Math.max(1, Gdx.graphics.getHeight() - UI_HEIGHT - SCREEN_PADDING * 2);
-        int tileSize = Math.min(MAX_TILE_SIZE, Math.max(MIN_TILE_SIZE,
-            Math.min(availableWidth / map.getWidth(), availableHeight / map.getHeight())));
+        int tileSize = Math.clamp(Math.min(availableWidth / map.getWidth(), availableHeight / map.getHeight()), MIN_TILE_SIZE, MAX_TILE_SIZE);
 
         for (var mob : gameManager.getMobManager().getMobs()) {
             Position mobPos = mob.getPosition();
-            float drawX = mobPos.getRow() * tileSize;
-            float drawY = mobPos.getCol() * tileSize;
+            float drawY = mobPos.getRow() * tileSize;
+            float drawX = mobPos.getCol() * tileSize;
 
-            batch.draw(textureManager.getMobsFrames()[0], drawY, drawX, tileSize, tileSize);
+            batch.draw(textureManager.getMobsFrames()[0], drawX, drawY, tileSize, tileSize);
         }
     }
 
@@ -146,7 +145,7 @@ public class FirstScreen implements Screen {
      * Affiche les informations du jeu (santé, argent, vague, etc.)
      */
     private void drawGameInfo() {
-        String info = "1 EASY  2 NORMAL  3 HARD  R REGEN | Difficulty: " + currentDifficulty
+        String info = "1 EASY  2 NORMAL  3 HARD  R RESTART  | Difficulty: " + currentDifficulty
                 + " | Health: " + gameManager.getHealth()
                 + " | Money: $" + gameManager.getMoney()
                 + " | Wave: " + gameManager.getCurrentWave();
@@ -190,20 +189,21 @@ public class FirstScreen implements Screen {
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             currentDifficulty = MapDifficulty.EASY;
-            regenerateMap();
+            regenerateMap(false);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
             currentDifficulty = MapDifficulty.NORMAL;
-            regenerateMap();
+            regenerateMap(false);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
             currentDifficulty = MapDifficulty.HARD;
-            regenerateMap();
+            regenerateMap(false);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            regenerateMap();
+            regenerateMap(true);
         }
     }
 
-    private void regenerateMap() {
-        map = mapGenerator.generate(currentDifficulty);
+    private void regenerateMap(boolean keepSeed) {
+        map = keepSeed ? mapGenerator.generate(currentDifficulty, map.getSeed()) : mapGenerator.generate(currentDifficulty);
+        towerUIManager.closeTowerMenu(); // close the menu to avoid creating a tower on the old map
         placedTowers.clear(); // reset towers when generating new map
         regenerateDecorations();
         gameManager = new GameManager(map, placedTowers); // Initialiser le GameManager avec la nouvelle map
