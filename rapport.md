@@ -4,6 +4,43 @@ Ce projet est un jeu de tower defense développé en Java, conçu pour démontre
 
 # Instructions de compilation
 
+Le projet utilise **Gradle** avec son **wrapper** inclus dans le dépôt. Il n'est donc pas nécessaire d'installer Gradle manuellement : il suffit d'utiliser les scripts fournis (`./gradlew` sur macOS/Linux ou `gradlew.bat` sur Windows).
+
+## Prérequis
+
+- **Java 21** : le projet est configuré pour compiler et s'exécuter avec cette version.
+- **Aucun IDE obligatoire** : l'IDE peut être utilisé pour le développement, mais la compilation et l'exécution peuvent se faire en ligne de commande.
+- Une connexion Internet peut être nécessaire au premier lancement afin que Gradle télécharge les dépendances du projet.
+
+## Compilation
+
+Depuis la racine du projet, les commandes principales sont :
+
+```bash
+./gradlew build
+```
+
+Cette commande compile l'ensemble du projet, exécute les tâches nécessaires et vérifie que les sources Java sont valides.
+
+Pour lancer directement l'application :
+
+```bash
+./gradlew :lwjgl3:run
+```
+
+Sur Windows, il faut utiliser :
+
+```bat
+gradlew.bat build
+gradlew.bat :lwjgl3:run
+```
+
+Si le script n'est pas exécutable sur macOS ou Linux, il faut d'abord lui donner les droits d'exécution une seule fois :
+
+```bash
+chmod +x gradlew
+```
+
 # Choix d'implémentation
 
 ## Gestion des tours
@@ -62,3 +99,30 @@ Lorsqu'un mob subit des dégâts, les handlers de la chaîne de responsabilité 
 - **ARROW, GLACE, LIGHTNING** : Ralentissent le mob en doublant son `moveInterval`. Le mob se déplace deux fois plus lentement.
 - **EXPLOSION** : Ne produit aucun effet de statut supplémentaire mais inflige les dégâts instantanément.
 - **POISON** : Élimine une résistance aléatoire du mob. Si le mob n'a plus de résistances, cet effet n'a aucun impact.
+
+## Génération de la carte
+
+La génération de la carte est centralisée dans la classe `MapGenerator`. Lorsqu'une nouvelle carte doit être créée, cette classe récupère d'abord la configuration associée à la difficulté demandée via `MapDifficulty`. Cette configuration définit principalement la taille de la carte ainsi que certaines limites liées au placement des tours. Le générateur crée ensuite une instance de `GameMap`, vide au départ, dans laquelle toutes les cases sont initialisées en herbe.
+
+La première étape concrète de la génération est réalisée par `PathGenerator`. Cette classe construit un unique chemin continu entre un point de départ et un point d'arrivée. Pour cela, elle utilise un seul objet `Random`, ce qui permet de garder une génération reproductible à partir d'une seed. Le chemin est tracé directement sur la carte en remplaçant certaines cases `GRASS` par des cases `ROAD`, puis les positions de début et de fin sont enregistrées dans `GameMap`. Le trajet est composé de segments horizontaux et verticaux, ce qui garantit un chemin simple, lisible et sans boucle.
+
+Une fois le chemin créé, `TowerSpotGenerator` se charge de placer les emplacements de tours. Cette classe parcourt les cases voisines de la route afin de repérer les positions candidates qui sont adjacentes au chemin. Les cases déjà occupées, trop proches du début ou de la fin, ou situées dans l'empreinte du château sont exclues. Les candidats restants sont mélangés, puis un sous-ensemble est retenu en respectant une distance minimale entre deux emplacements. Les positions sélectionnées deviennent alors des cases `TOWER_SPOT` et sont stockées dans la carte.
+
+En résumé, la génération suit un ordre simple : d'abord la carte vide, ensuite le chemin, puis les emplacements de tours. Chaque étape repose sur le résultat de la précédente, ce qui permet d'éviter de générer des éléments incohérents.
+
+## Affichage et rendu
+
+L'affichage est principalement géré par `TextureManager`, `MapRenderer` et `FirstScreen`. `TextureManager` a pour rôle de charger les assets du jeu et de les découper si nécessaire en différentes frames. Il centralise ainsi l'accès aux textures de l'herbe, des routes, du château, des tours, des mobs, des projectiles et des décorations.
+
+`MapRenderer` s'occupe du dessin de la carte elle-même. À chaque frame, il commence par calculer la taille des tuiles et la position de la grille à l'écran en fonction des dimensions de la fenêtre. Ensuite, il dessine les éléments dans un ordre précis : l'herbe en fond, les routes, les emplacements de tours, les décorations, puis le château. Les tours placées, les mobs et les projectiles sont dessinés par-dessus la carte.
+
+Pour les routes, `MapRenderer` observe les cases voisines afin de choisir le bon sous-sprite du tileset. Cela permet d'afficher automatiquement les portions droites et les virages en fonction de la forme réelle du chemin généré. Le château est dessiné à partir de sa position d'arrivée, avec une largeur et une hauteur définies dans `GameMap`. Les décorations sont affichées plus petites que la taille d'une tuile afin de rester visibles sans masquer complètement le décor de base.
+
+Enfin, `FirstScreen` orchestre le tout : elle déclenche la génération de la carte, initialise les gestionnaires nécessaires, traite les entrées clavier et souris, puis appelle les différentes étapes de rendu. Cette séparation permet de garder la logique de génération, le rendu graphique et les interactions utilisateur dans des classes distinctes, ce qui rend le projet plus lisible et plus simple à faire évoluer.
+
+
+# Diagramme de classes
+
+Voici le diagramme de classes qui se concentre sur la partie du projet qui met en œuvre le patron de chaîne de responsabilité pour la gestion des dégâts. Il illustre les relations entre les classes principales impliquées dans le traitement des attaques des tours sur les mobs, ainsi que la structure de la chaîne de responsabilité.
+
+![Diagramme de classes](./classDiagram/classDiagram.png)
