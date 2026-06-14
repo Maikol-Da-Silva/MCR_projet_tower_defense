@@ -26,4 +26,39 @@ Le projet utilise le patron chaîne de responsabilité pour gérer l’applicati
 4. DMGHealth : Applique finalement les dégâts à la santé de la créature
    Chaque gestionnaire (héritage de DMGHandler) peut traiter sa partie puis déléguer au suivant, formant une chaîne flexible où de nouveaux types de dégâts ou d’effets peuvent facilement être ajoutés sans modifier le code existant.
 
-La chaîne est assemblé dans le constructeur de `TowerManager` , puis passé à tour au moment de sa pose. Les tours reçoivent ainsi une référence partagée vers la chaîne et se contentent de lui déléguer le calcul des dégâts lorsqu'un ennemi entre à leur portée. 
+La chaîne est assemblé dans le constructeur de `TowerManager` , puis passé à tour au moment de sa pose. Les tours reçoivent ainsi une référence partagée vers la chaîne et se contentent de lui déléguer le calcul des dégâts lorsqu'un ennemi entre à leur portée.
+
+## Gestion des ennemis (Mobs)
+La gestion des ennemis (mobs) est centralisée par la classe `MobManager`, qui crée et gère les vagues de créatures. Chaque mob est une instance de la classe `Mob` qui encapsule l'état et le comportement d'une créature individuelle. Les mobs suivent le chemin défini sur la carte et peuvent être attaqués par les tours.
+
+### Les mobs (`Mob`)
+Un mob représente une créature ennemie avec les caractéristiques suivantes :
+- **Position** : Le mob occupe une position sur la carte et se déplace le long du chemin.
+- **Santé** : Chaque mob possède une santé initiale (`health`) et une santé actuelle (`currentHealth`) qui diminue lorsqu'il subit des dégâts. Le mob est éliminé quand sa santé atteint zéro.
+- **Type** : Les neuf types disponibles (`BAT`, `BIG_SLIME`, `DEMON`, `GHOST`, `GOBLIN`, `KING_SLIME`, `NORMAL_SLIME`, `SKELETON`, `ZOMBIE`) permettent de définir quel asset nous allons utiliser pour l'affichage.
+- **Vitesse de déplacement** : Contrôlée par un `moveInterval` et un compteur de rechargement (`moveCooldown`), elle détermine la fréquence à laquelle le mob se déplace sur la carte.
+- **Résistances** : Un mob peut avoir des résistances à un ou plusieurs types de dégâts (`DmgType`), ce qui réduit l'impact des attaques correspondantes via le handler `DMGResistance`.
+- **Bouclier** : Un booléen indiquant si le mob est protégé par un bouclier. Le handler `DMGShield` absorbe complètement un dégât si le mob a un bouclier actif, puis le désactive.
+
+### Le gestionnaire de mobs (`MobManager`)
+Le `MobManager` est responsable de la création et de la gestion des vagues d'ennemis.
+
+#### Création de vagues (`createWave`)
+La méthode `createWave` réinitialise la liste des mobs et crée une nouvelle vague selon les paramètres suivants :
+- **Nombre de mobs communs** : Défini par `nbMob - NB_BOSS` (où `NB_BOSS = 2`), créés avec des stats de base.
+- **Mobs boss** : Le `MobManager` ajoute toujours deux boss à chaque vague. Ces boss sont des créatures renforcées avec :
+  - Une **santé doublée** : `health * BOSS_FACTOR` (où `BOSS_FACTOR = 2`)
+  - Une **vitesse doublée** : `speed * BOSS_FACTOR`.
+  - Un **bouclier actif** (`shield = true`), absorbant le premier dégât reçu
+  
+Chaque mob, qu'il soit commun ou boss, est assigné :
+- Un **type aléatoire** parmi les neuf types disponibles
+- Une **résistance aléatoire** à l'un des cinq types de dégâts
+- Une **vitesse de base** assignée à 4.0 par défaut pour les mobs communs
+
+### Types de dégâts et leurs effets
+Lorsqu'un mob subit des dégâts, les handlers de la chaîne de responsabilité appliquent des effets en fonction du type (`DmgType`) :
+
+- **ARROW, GLACE, LIGHTNING** : Ralentissent le mob en doublant son `moveInterval`. Le mob se déplace deux fois plus lentement.
+- **EXPLOSION** : Ne produit aucun effet de statut supplémentaire mais inflige les dégâts instantanément.
+- **POISON** : Élimine une résistance aléatoire du mob. Si le mob n'a plus de résistances, cet effet n'a aucun impact.
