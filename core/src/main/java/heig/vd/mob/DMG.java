@@ -19,7 +19,4 @@ public class DMG {
     }
 
     public DmgType getType() {return type;}
-    public void setType(DmgType type) {
-        this.type = type;
-    }
 }

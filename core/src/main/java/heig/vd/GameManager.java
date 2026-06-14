@@ -190,10 +190,8 @@ public class GameManager {
     public boolean isGameOver() { return gameOver; }
     public boolean isGameWon() { return gameWon; }
     public MobManager getMobManager() { return mobManager; }
-    public boolean isWaveInProgress() { return waveInProgress; }
 
     // Setters
-    public void addMoney(int amount) { this.money += amount; }
     public void spendMoney(int amount) { this.money -= amount; }
 }
 

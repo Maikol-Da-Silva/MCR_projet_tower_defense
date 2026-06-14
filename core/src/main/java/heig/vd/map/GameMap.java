@@ -31,17 +31,6 @@ public class GameMap {
         reset();
     }
 
-    public GameMap(int width, int height, Position spawnPoint, List<Position> towerSlots, List<Position> path) {
-        this(width, height, -1L, null);
-        this.spawnPoint = spawnPoint;
-        if (path != null) {
-            this.path.addAll(path);
-        }
-        if (towerSlots != null) {
-            this.towerSlots.addAll(towerSlots);
-        }
-    }
-
     public void reset() {
         for (int x = 0; x < width; x++) {
             Arrays.fill(tiles[x], TileType.GRASS);
@@ -62,10 +51,6 @@ public class GameMap {
 
     public long getSeed() {
         return seed;
-    }
-
-    public MapDifficulty getDifficulty() {
-        return difficulty;
     }
 
     public TileType getTile(Position pos) {
@@ -109,10 +94,6 @@ public class GameMap {
         if (newPath != null) {
             path.addAll(newPath);
         }
-    }
-
-    public List<Position> getTowerSlots() {
-        return towerSlots;
     }
 
     public void setTowerSlots(List<Position> newTowerSlots) {

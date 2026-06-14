@@ -221,20 +221,6 @@ public class MapRenderer {
         return new Position(col, row);
     }
 
-    // --- Getters ---
-
-    public int getTileSize() {
-        return tileSize;
-    }
-
-    public int getOffsetX() {
-        return offsetX;
-    }
-
-    public int getOffsetY() {
-        return offsetY;
-    }
-
     // --- Private rendering helpers ---
 
     private void drawDecoration(SpriteBatch batch, Position pos, float drawX, float drawY,

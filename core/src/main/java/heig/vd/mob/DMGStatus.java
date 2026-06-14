@@ -7,7 +7,6 @@ public class DMGStatus extends DMGHandler{
 
     @Override
     public void handle(Mob mob, DMG damage) {
-        //TODO trouver des idées
         switch (damage.getType()) {
             case ARROW, GLACE, LIGHTNING:
                 mob.setSpeed(mob.getSpeed() * 2);

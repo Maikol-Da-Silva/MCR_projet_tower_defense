@@ -1,5 +1,6 @@
 package heig.vd.mob;
 
+import heig.vd.utils.DmgType;
 import heig.vd.utils.Position;
 import heig.vd.utils.TypeMob;
 
@@ -32,11 +33,11 @@ public class MobManager {
         Random random = new Random();
 
         for (int i = 0; i < nbMob - NB_BOSS; i++){
-            mobs.add(new Mob(startpos, SPEED, mobHealth, TypeMob.values()[random.nextInt(TypeMob.values().length)]));
+            mobs.add(new Mob(startpos, SPEED, mobHealth, TypeMob.values()[random.nextInt(TypeMob.values().length)], DmgType.values()[random.nextInt(DmgType.values().length)]));
         }
 
         for (int i = 0; i < NB_BOSS; i++){
-            mobs.add(new Mob(startpos, SPEED * BOSS_FACTOR, mobHealth * BOSS_FACTOR,TypeMob.values()[random.nextInt(TypeMob.values().length)]));
+            mobs.add(new Mob(startpos, SPEED * BOSS_FACTOR, mobHealth * BOSS_FACTOR,TypeMob.values()[random.nextInt(TypeMob.values().length)], DmgType.values()[random.nextInt(DmgType.values().length)]));
             mobs.get(i).setShield(true); //Les boss ont un shield
         }
     }
