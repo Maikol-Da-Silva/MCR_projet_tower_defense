@@ -12,6 +12,9 @@ public class Tower {
     private CombatTowerType type;
     private float cooldownTimer = 0f;
 
+    // Damage chain-of-responsibility, injected by the TowerManager that owns this tower.
+    private DMGHandler dmgChain;
+
     private final List<Projectile> projectiles = new ArrayList<>();
 
     public Tower(Position position, CombatTowerType type) {
@@ -29,25 +32,19 @@ public class Tower {
     }
 
     public void attack(Mob mob) {
-        DMGHandler chain = new DMGShield(new DMGStatus(new DMGResistance(new DMGHealth(null))));
-
         if (this.isInRange(mob)) {
             DMG damage = new DMG(type.getDamage(), type.getDamageType());
-            mob.takeDamage(chain, damage);
+            mob.takeDamage(dmgChain, damage);
         }
     }
 
-    // Getters
+    // Getters / Setters
     public Position getPosition() { return position; }
     public void setPosition(Position position) { this.position = position; }
 
     public CombatTowerType getType() { return type; }
 
-    public DMG getDamage() {
-        return new DMG(type.getDamage(), type.getDamageType());
-    }
-
-    public int getRange() { return type.getRange(); }
+    public void setDmgChain(DMGHandler dmgChain) { this.dmgChain = dmgChain; }
 
     public int getFireRate() { return type.getFireRate(); }
 

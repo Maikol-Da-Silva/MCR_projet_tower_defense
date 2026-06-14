@@ -18,12 +18,12 @@ import heig.vd.render.TextureManager;
 import heig.vd.render.MapRenderer.DecorationPlacement;
 import heig.vd.tower.CombatTowerType;
 import heig.vd.tower.Tower;
+import heig.vd.tower.TowerManager;
 import heig.vd.ui.TowerUIManager;
 import heig.vd.utils.Position;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -45,7 +45,8 @@ public class FirstScreen implements Screen {
     private GameMap map;
 
     private final List<DecorationPlacement> decorationPlacements = new ArrayList<>();
-    private final Map<Position, Tower> placedTowers = new HashMap<>(); // towers placed on map
+    private TowerManager towerManager; // owns placed towers and the shared damage chain
+    private Map<Position, Tower> placedTowers; // view of towerManager's towers, used for rendering
 
     private GameManager gameManager; // Gère la logique du jeu
 
@@ -195,7 +196,8 @@ public class FirstScreen implements Screen {
     private void regenerateMap(boolean keepSeed) {
         map = keepSeed ? mapGenerator.generate(currentDifficulty, map.getSeed()) : mapGenerator.generate(currentDifficulty);
         towerUIManager.closeTowerMenu(); // close the menu to avoid creating a tower on the old map
-        placedTowers.clear(); // reset towers when generating new map
+        towerManager = new TowerManager(map); // fresh tower set (and damage chain) for the new map
+        placedTowers = towerManager.getTowers();
         regenerateDecorations();
         gameManager = new GameManager(map, placedTowers); // Initialiser le GameManager avec la nouvelle map
         mapRenderer.updateLayout(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), map);
@@ -248,8 +250,9 @@ public class FirstScreen implements Screen {
                 Position towerPos = towerUIManager.getSelectedTowerPosition();
                 if (towerPos != null && gameManager.getMoney() >= selectedType.getPrice()) {
                     Tower tower = new Tower(towerPos, selectedType);
-                    placedTowers.put(towerPos, tower);
-                    gameManager.spendMoney(selectedType.getPrice());
+                    if (towerManager.placeTower(towerPos, tower)) {
+                        gameManager.spendMoney(selectedType.getPrice());
+                    }
                 }
             }
             towerUIManager.closeTowerMenu();
