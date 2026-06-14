@@ -1,5 +1,10 @@
 package heig.vd.mob;
 
+import heig.vd.utils.DmgType;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class DMGStatus extends DMGHandler{
     public DMGStatus(DMGHandler next) {
         super(next);
@@ -16,7 +21,9 @@ public class DMGStatus extends DMGHandler{
                 break;
             case POISON:
                 if (!mob.getResistance().isEmpty()) {
-                    mob.getResistance().removeFirst();
+                    List<DmgType> resistances = new ArrayList<>(mob.getResistance());
+                    resistances.removeFirst();
+                    mob.setResistances(resistances);
                 }
                 break;
         }

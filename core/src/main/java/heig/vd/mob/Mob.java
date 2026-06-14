@@ -41,6 +41,7 @@ public class Mob {
     public void setCurrentHealth(int currentHealth) {this.currentHealth = currentHealth;}
 
     public List<DmgType> getResistance() {return resistances;}
+    public void setResistances(List<DmgType> resistance) {this.resistances = resistance;}
 
     public boolean isShield() {return shield;}
     public void setShield(boolean shield) {this.shield = shield;}
